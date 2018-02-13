@@ -1,0 +1,55 @@
+name:                btctime
+version:             1.0
+synopsis:            Get latest Bitcoin block hash and time
+description:         Library for acquiring the latest Bitcoin block hash and
+                     time stamp. This software hits multiple BTC blockchain
+                     explorer services and compares them to get a trustworthy
+                     answer.
+homepage:            https://github.com/dino-/btctime
+license:             ISC
+license-file:        LICENSE
+author:              Dino Morelli
+maintainer:          dino@ui3.info
+copyright:           2018 Dino Morelli
+category:            Unclassified
+build-type:          Simple
+cabal-version:       >=1.10
+extra-source-files:  README.md
+                     stack.yaml
+
+source-repository    head
+   type:             git
+   location:         https://github.com/dino-/btctime.git
+
+library
+   hs-source-dirs:   src
+   exposed-modules:
+      BTCTime.BTCTime
+      BTCTime.Explorers.BitcoinchainCom
+      BTCTime.Explorers.BlockchainInfo
+      BTCTime.Explorers.BlockexplorerCom
+      BTCTime.Explorers.BtcCom
+      BTCTime.Types
+   ghc-options:      -Wall -fwarn-tabs
+   default-language: Haskell2010
+   build-depends:      base >= 4.7 && < 5
+                     , aeson
+                     , lens
+                     , safe-exceptions
+                     , string-conv
+                     , text   
+                     , time
+                     , vector
+                     , wreq
+
+test-suite tests
+   hs-source-dirs:   testsuite
+   main-is:          tests.hs
+   ghc-options:      -Wall -fwarn-tabs
+   default-language: Haskell2010
+   type:             exitcode-stdio-1.0
+   build-depends:      base >= 4.7 && < 5
+                     , btctime
+                     , hspec
+   other-modules:
+      Test.BTCTime.BTCTime
