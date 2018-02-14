@@ -7,7 +7,7 @@ module BTCTime.Explorers.BtcCom
    ( getBlockTime, getLatestBlock )
 where
 
-import BTCTime.Types
+import BTCTime.Types ( BlockexplorerException (..), BTCBlock (..) )
 
 import Control.Exception.Safe ( SomeException, throw, tryAny )
 import Control.Lens ( (^.) )

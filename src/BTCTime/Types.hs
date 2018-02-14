@@ -2,6 +2,9 @@
 -- Author: Dino Morelli <dino@ui3.info>
 
 module BTCTime.Types
+   ( BlockexplorerException (..)
+   , BTCBlock (..)
+   )
 where
 
 import Control.Exception.Safe ( Exception, Typeable )
