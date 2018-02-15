@@ -35,7 +35,6 @@ library
    build-depends:      base >= 4.7 && < 5
                      , aeson
                      , lens
-                     , safe-exceptions
                      , string-conv
                      , text   
                      , time
@@ -51,5 +50,6 @@ test-suite tests
    build-depends:      base >= 4.7 && < 5
                      , btctime
                      , hspec
+                     , time
    other-modules:
       Test.BTCTime.BTCTime

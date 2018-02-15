@@ -1,7 +1,7 @@
 -- License: ISC (see LICENSE)
 -- Author: Dino Morelli <dino@ui3.info>
 
-import Test.Hspec
+import Test.Hspec ( hspec )
 
 import Test.BTCTime.BTCTime ( test_blockTime )
 

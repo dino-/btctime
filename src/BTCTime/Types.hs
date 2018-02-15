@@ -7,9 +7,10 @@ module BTCTime.Types
    )
 where
 
-import Control.Exception.Safe ( Exception, Typeable )
+import Control.Exception ( Exception )
 import Data.Text ( Text )
 import Data.Time ( UTCTime )
+import Type.Reflection ( Typeable )
 
 
 newtype BlockexplorerException = BlockexplorerException String

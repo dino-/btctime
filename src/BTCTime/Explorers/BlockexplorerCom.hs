@@ -9,7 +9,7 @@ where
 
 import BTCTime.Types ( BlockexplorerException (..), BTCBlock (..) )
 
-import Control.Exception.Safe ( SomeException, throw, tryAny )
+import Control.Exception ( throwIO )
 import Control.Lens ( (^.) )
 import Data.Aeson ( FromJSON, (.:), decode, parseJSON, withObject )
 import Data.String.Conv ( toS )
@@ -38,12 +38,12 @@ instance FromJSON BlockchainInfo where
     return $ BlockchainInfo block
 
 
-getLatestBlock :: IO (Either SomeException BTCBlock)
-getLatestBlock = tryAny $ do
+getLatestBlock :: IO BTCBlock
+getLatestBlock = do
   -- First, retrieve the latest block hash (may fail)
   hashResponse <- get "https://blockexplorer.com/api/status?q=getLastBlockHash"
   let hashBody = hashResponse ^. responseBody
-  (Hash hash) <- maybe (throw $ BlockexplorerException (toS hashBody)) return $ decode hashBody
+  (Hash hash) <- maybe (throwIO $ BlockexplorerException (toS hashBody)) return $ decode hashBody
 
   -- Retrieve the JSON document for the latest block (may fail)
   response <- get $ concat ["https://blockexplorer.com/api/block/", (toS hash)]
@@ -51,15 +51,15 @@ getLatestBlock = tryAny $ do
   -- Decode the JSON in the response body and retrieve the block hash
   -- and timestamp (may fail)
   let body = response ^. responseBody
-  maybe (throw $ BlockexplorerException (toS body)) (return . unwrap) $ decode body
+  maybe (throwIO $ BlockexplorerException (toS body)) (return . unwrap) $ decode body
 
 
-getBlockTime :: Text -> IO (Either SomeException UTCTime)
-getBlockTime hash = tryAny $ do
+getBlockTime :: Text -> IO UTCTime
+getBlockTime hash = do
   -- Retrieve the JSON document for a specific block (may fail)
   response <- get $ concat ["https://blockexplorer.com/api/block/", (toS hash)]
 
   -- Decode the JSON in the response body and retrieve the block hash
   -- and timestamp (may fail)
   let body = response ^. responseBody
-  maybe (throw $ BlockexplorerException (toS body)) (return . blTime . unwrap) $ decode body
+  maybe (throwIO $ BlockexplorerException (toS body)) (return . blTime . unwrap) $ decode body

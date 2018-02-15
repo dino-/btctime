@@ -14,7 +14,7 @@ where
 
 import BTCTime.Types ( BlockexplorerException (..), BTCBlock (..) )
 
-import Control.Exception.Safe ( SomeException, throw, tryAny )
+import Control.Exception ( throwIO )
 import Control.Lens ( (^.) )
 import Data.Aeson ( FromJSON, Value (Array, Object), (.:), decode, parseJSON )
 import Data.Aeson.Types ( typeMismatch )
@@ -43,23 +43,23 @@ instance FromJSON BitcoinchainCom where
   parseJSON invalid = typeMismatch "BTCBlock" invalid
 
 
-getLatestBlock :: IO (Either SomeException BTCBlock)
-getLatestBlock = tryAny $ do
+getLatestBlock :: IO BTCBlock
+getLatestBlock = do
   -- Retrieve the JSON document for the latest block (may fail)
   response <- get "https://api-r.bitcoinchain.com/v1/blocks/1"
 
   -- Decode the JSON in the response body and retrieve the block hash
   -- and timestamp (may fail)
   let body = response ^. responseBody
-  maybe (throw $ BlockexplorerException (toS body)) (return . unwrap) $ decode body
+  maybe (throwIO $ BlockexplorerException (toS body)) (return . unwrap) $ decode body
 
 
-getBlockTime :: Text -> IO (Either SomeException UTCTime)
-getBlockTime hash = tryAny $ do
+getBlockTime :: Text -> IO UTCTime
+getBlockTime hash = do
   -- Retrieve the JSON document for a specific block (may fail)
   response <- get $ concat ["https://blockchain.info/blocks/", (toS hash)]
 
   -- Decode the JSON in the response body and retrieve the block hash
   -- and timestamp (may fail)
   let body = response ^. responseBody
-  maybe (throw $ BlockexplorerException (toS body)) (return . blTime . unwrap) $ decode body
+  maybe (throwIO $ BlockexplorerException (toS body)) (return . blTime . unwrap) $ decode body
